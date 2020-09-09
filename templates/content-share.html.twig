@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1>Content sharer</h1>
+    {% if hadSession %}
+        <h2>Using existing session, your session key is: {{ session.sessionId }}</h2>
+    {% else %}
+        <h2>Created new session with key: {{ session.sessionId }}</h2>
+    {% endif %}
+
+    <a href="{{ path("content-sharer", {'action': 'new'}) }}">Generate new session</a>
+    <br>
+    <input type="text"/>
+    <a href="#">Join session</a>
+
+{% endblock %}
