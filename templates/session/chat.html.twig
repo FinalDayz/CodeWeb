@@ -1,0 +1,10 @@
+<div>
+    {% if contentArr['ChatContent'] is defined %}
+        {% for chatMessage in contentArr['ChatContent'] %}
+            <p>{{ chatMessage.message }}</p>
+        {% endfor %}
+    {% else %}
+
+    {% endif %}
+
+</div>

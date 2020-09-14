@@ -5,6 +5,7 @@ namespace App\Service;
 
 
 use App\Entity\Session;
+use App\Entity\SessionContent;
 use App\Repository\SessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -43,6 +44,29 @@ class ContentSessionService
 
         return $session;
     }
+
+    /**
+     * @param Session $session
+     * @return array
+     */
+    public function getSessionContent(Session $session): array
+    {
+        /** @var SessionContent[] $contentArr */
+        $contentArr = $this->entityManager->getRepository(SessionContent::class)
+            ->findBy(['session' => $session]);
+        $contentAssociativeArray = [];
+
+        foreach($contentArr as $content) {
+            $type = $content->getType();;
+            if(!isset($contentAssociativeArray[$type])) {
+                $contentAssociativeArray[$type] = [];
+            }
+            array_push($contentAssociativeArray[$type], $content);
+        }
+
+        return $contentAssociativeArray;
+    }
+
     /**
      * @return string
      * @throws Exception
