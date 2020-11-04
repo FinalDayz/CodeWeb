@@ -2,10 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\MediaContent;
 use App\Entity\SessionContent;
 use App\Service\ContentSessionService;
+use App\Service\MediaContentHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +41,8 @@ class SessionController extends AbstractController
     public function contentSharer(
         Request $request,
         ContentSessionService $service,
-        string $action = ''
+        string $action = '',
+        MediaContentHandler $mediaContentHandler
     ): Response
     {
         $cookies = $request->cookies;
@@ -53,16 +58,26 @@ class SessionController extends AbstractController
         }
 
         if ($action === 'new') {
-            $cookies->remove('content-session');
-            return $this->redirectToRoute('content-sharer');
+            $response = $this->redirectToRoute('content-sharer');
+            $response->headers->clearCookie('content-session');
+            return $response;
         }
 
-        if ($action === 'join') {
-
-        }
 
         $sessionId = $cookies->get('content-session');
         $newSession = !$sessionId;
+
+        if ($action === 'join') {
+            $sessionId = strtolower($request->get('session-key'));
+            if (!$service->verifySessionKey($sessionId)) {
+                $this->addFlash("error", "invalid session key");
+                $newSession = true;
+            } else {
+                array_push($newCookies,
+                    Cookie::create('content-session', $sessionId, strtotime('now + 1 month'))
+                );
+            }
+        }
 
         if ($newSession) {
             $sessionId = $service->generateId();
@@ -71,19 +86,22 @@ class SessionController extends AbstractController
             );
         }
 
-
-
         $session = $service->getSession($sessionId, !$newSession);
 
+        $mediaForm = $mediaContentHandler->buildForm();
+        $mediaContentHandler->handleUpload($mediaForm, $request, $session);
+    
         $sessionContent = $service->getSessionContent($session);
         $response = $this->render('content-share.html.twig',
             [
+                'mediaForm' => $mediaForm->createView(),
                 'hadSession' => !$newSession,
                 'session' => $session,
                 'sessionContent' => $sessionContent,
                 'uid' => $uid,
             ]
         );
+
 
         foreach ($newCookies as $cookie) {
             $response->headers->setCookie(

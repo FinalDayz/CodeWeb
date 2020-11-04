@@ -7,12 +7,26 @@
         <h2>Created new session with key: {{ session.sessionId }}</h2>
     {% endif %}
 
+    {% for message in app.flashes('error') %}
+        <div style="color: red">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <a href="{{ path("content-sharer", {'action': 'new'}) }}">Generate new session</a>
     <br>
-    <input type="text"/>
-    <a href="#">Join session</a>
+    <form action="{{ path('content-sharer', {'action': 'join'}) }}" method="get">
+        key: <input type="text" name="session-key"/>
+        <button type="submit">Join session</button>
+    </form>
+
 
     {% include 'session/chat.html.twig' with {
+        'session': session,
+        'contentArr': sessionContent,
+    } %}
+
+    {% include 'session/media.html.twig' with {
         'session': session,
         'contentArr': sessionContent,
     } %}

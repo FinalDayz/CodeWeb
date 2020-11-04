@@ -13,7 +13,7 @@ use Exception;
 class ContentSessionService
 {
     static $ID_NUMBER_OF_BLOCKS = 2;
-    static $ID_HEX_PER_BLOCK = 3;
+    static $ID_HEX_PER_BLOCK = 2;
     // Number of combinations = 16 ^ ($ID_NUMBER_OF_BLOCKS * $ID_HEX_PER_BLOCK)
     // = 16 ^ (3*2) = 16 581 375
 
@@ -83,5 +83,13 @@ class ContentSessionService
         }
 
         return implode($hex, '-');
+    }
+
+    public function verifySessionKey($sessionId): bool
+    {
+        return preg_match(
+            '/^([0-9a-f]{'.self::$ID_HEX_PER_BLOCK.'}-){'.(self::$ID_NUMBER_OF_BLOCKS-1).'}([0-9a-f]{'.self::$ID_HEX_PER_BLOCK.'})$/',
+            $sessionId
+        );
     }
 }

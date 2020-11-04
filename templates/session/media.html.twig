@@ -1,0 +1,21 @@
+<div>
+    <h2>Media content:</h2>
+    {% if contentArr['MediaContent'] is defined %}
+        {% for media in contentArr['MediaContent'] %}
+            <h3>{{ media.name }}</h3>
+            <p>Type: {{ media.type }}</p>
+            <p>Size: {{ media.size/1024 }}Kb</p>
+            <a href="{{ path('download-content', {id: media.id}) }}">download</a>
+        {% endfor %}
+    {% else %}
+
+    {% endif %}
+
+
+    Share content:
+    {{ form(mediaForm) }}
+{#    {{ form_start(mediaForm) }}#}
+{#    {{ form_end(mediaForm) }}#}
+
+
+</div>

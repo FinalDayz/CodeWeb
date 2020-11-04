@@ -12,12 +12,6 @@ use ReflectionException;
  */
 class MediaContent extends SessionContent
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -38,11 +32,6 @@ class MediaContent extends SessionContent
      * @ORM\Column(type="string", length=255)
      */
     private $fileType;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getName(): ?string
     {

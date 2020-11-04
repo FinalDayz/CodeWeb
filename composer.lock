@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "34c3f62b46c9de54107649a71f78da76",
+    "content-hash": "c8d4106acbe4d4cf1453a3497a16eacb",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -1216,6 +1216,7 @@
                 "reflection",
                 "static"
             ],
+            "abandoned": "roave/better-reflection",
             "time": "2020-03-27T11:06:43+00:00"
         },
         {
@@ -3135,16 +3136,16 @@
         },
         {
             "name": "symfony/form",
-            "version": "v5.1.5",
+            "version": "v5.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/form.git",
-                "reference": "236d88a28671f9b13860789eabe28e8c4c8bba86"
+                "reference": "3f61496220b9f8672ede9b9acfb87a06c0c752f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/form/zipball/236d88a28671f9b13860789eabe28e8c4c8bba86",
-                "reference": "236d88a28671f9b13860789eabe28e8c4c8bba86",
+                "url": "https://api.github.com/repos/symfony/form/zipball/3f61496220b9f8672ede9b9acfb87a06c0c752f2",
+                "reference": "3f61496220b9f8672ede9b9acfb87a06c0c752f2",
                 "shasum": ""
             },
             "require": {
@@ -3182,7 +3183,7 @@
                 "symfony/http-kernel": "^4.4|^5.0",
                 "symfony/security-csrf": "^4.4|^5.0",
                 "symfony/translation": "^4.4|^5.0",
-                "symfony/validator": "^4.4|^5.0",
+                "symfony/validator": "^4.4.12|^5.1.6",
                 "symfony/var-dumper": "^4.4|^5.0"
             },
             "suggest": {
@@ -3191,11 +3192,6 @@
                 "symfony/validator": "For form validation."
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.1-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Form\\": ""
@@ -3220,7 +3216,7 @@
             ],
             "description": "Symfony Form Component",
             "homepage": "https://symfony.com",
-            "time": "2020-09-01T12:25:21+00:00"
+            "time": "2020-10-28T05:25:38+00:00"
         },
         {
             "name": "symfony/framework-bundle",
