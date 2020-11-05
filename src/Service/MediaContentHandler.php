@@ -9,10 +9,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\File;
 
 class MediaContentHandler
 {
@@ -28,7 +28,7 @@ class MediaContentHandler
 
     public function __construct(ContainerInterface $container, FileUploader $uploader)
     {
-        $this->container= $container;
+        $this->container = $container;
         $this->uploader = $uploader;
     }
 
@@ -36,23 +36,33 @@ class MediaContentHandler
     {
         return $this->container->get('form.factory')
             ->createBuilder(FormType::class)
-            ->add('content', FileType::class)
-            ->add('add', SubmitType::class, ['label' => 'Add media file'])
+            ->add('file', FileType::class, [
+                'constraints' => [
+                    new File([
+                        'maxSize' => '500M',
+                    ])
+                ],
+            ])
+            ->add('add', SubmitType::class, ['label' => 'Add file'])
             ->getForm();
     }
 
-    public function handleUpload(FormInterface $form, Request $request, Session $session) {
+    public function handleUpload(FormInterface $form, Request $request, Session $session)
+    {
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $contentFile */
-            $contentFile = $form->get('content')->getData();
+            $contentFile = $form->get('file')->getData();
             $mediaContent = new MediaContent();
             $mediaContent->setSize($contentFile->getSize());
             $mediaContent->setName($contentFile->getClientOriginalName());
-            $mediaContent->setFileType($contentFile->getType());
+            $mediaContent->setFileType($contentFile->getMimeType());
+            //TODO: change this to a config file, but I am too lazy to do this now
             $fileName = $this->uploader->upload($contentFile, "/data/mediaContent/");
 
-            $mediaContent->setLocation("/data/mediaContent/" . $fileName);
+            $mediaContent->setLocation(
+                $this->container->get('kernel')->getProjectDir() . "/data/mediaContent/" . $fileName
+            );
             $mediaContent->setIP($request->getClientIp());
             $mediaContent->setSession($session);
 

@@ -9,6 +9,7 @@ use App\Entity\SessionContent;
 use App\Repository\SessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
 
 class ContentSessionService
 {
@@ -25,6 +26,12 @@ class ContentSessionService
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    public function getSessionFromRequest(Request $request): Session {
+        return $this->getSession(
+            $request->cookies->get('content-session')
+        );
     }
 
     public function getSession(string $sessionId, bool $mayExists = true): Session
@@ -53,7 +60,7 @@ class ContentSessionService
     {
         /** @var SessionContent[] $contentArr */
         $contentArr = $this->entityManager->getRepository(SessionContent::class)
-            ->findBy(['session' => $session]);
+            ->findBy(['session' => $session], ['id' => 'desc']);
         $contentAssociativeArray = [];
 
         foreach($contentArr as $content) {

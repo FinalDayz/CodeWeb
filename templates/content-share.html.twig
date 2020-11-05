@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
-{% block body %}
+{% block container %}
     <h1>Content sharer</h1>
     {% if hadSession %}
-        <h2>Using existing session, your session key is: {{ session.sessionId }}</h2>
+        <p class="flow-text">Using existing session, your session key is: <code>{{ session.sessionId }}</code>, <a href="{{ path("content-sharer-new-session") }}">generate new session</a></p>
     {% else %}
-        <h2>Created new session with key: {{ session.sessionId }}</h2>
+        <p class="flow-text">Created new session with key: <code>{{ session.sessionId }}</code>, <a href="{{ path("content-sharer-new-session") }}">, generate new session</a></p>
     {% endif %}
 
     {% for message in app.flashes('error') %}
@@ -12,23 +12,32 @@
             {{ message }}
         </div>
     {% endfor %}
+    <p class="flow-text">Or join a session:</p>
+    <form action="{{ path('content-sharer-join-session') }}" method="get">
+        <div class="input-field inline">
 
-    <a href="{{ path("content-sharer", {'action': 'new'}) }}">Generate new session</a>
-    <br>
-    <form action="{{ path('content-sharer', {'action': 'join'}) }}" method="get">
-        key: <input type="text" name="session-key"/>
-        <button type="submit">Join session</button>
+            <label for="session-key">Session key</label>
+            <input id="session-key" class="inline" type="text" name="session-key"/>
+            <button type="submit" class="btn-small">Join session</button>
+        </div>
     </form>
+    <div class="spacer"></div>
+    <hr>
+    <div class="row">
+        <div class="col l6 s12">
 
+            {% include 'session/media.html.twig' with {
+                'session': session,
+                'contentArr': sessionContent,
+            } %}
+        </div>
 
-    {% include 'session/chat.html.twig' with {
-        'session': session,
-        'contentArr': sessionContent,
-    } %}
-
-    {% include 'session/media.html.twig' with {
-        'session': session,
-        'contentArr': sessionContent,
-    } %}
+        <div class="col l6 s12">
+            {% include 'session/chat.html.twig' with {
+                'session': session,
+                'contentArr': sessionContent,
+            } %}
+        </div>
+    </div>
 
 {% endblock %}

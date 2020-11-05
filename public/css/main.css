@@ -1,0 +1,17 @@
+.spacer {
+    padding: 25px;
+    display: block;
+    width: 100%;
+}
+
+.scrollable {
+    overflow: scroll;
+}
+
+.sticky {
+    position: sticky;
+    left: 0;
+}
+.pointable {
+    cursor: pointer;
+}

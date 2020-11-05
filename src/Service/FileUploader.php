@@ -28,13 +28,15 @@ class FileUploader
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
-        $fileName = $fileName === null ? $safeFilename . '-' . uniqid() . '.' . $file->guessExtension() : $fileName;
+        $extension = $file->guessExtension() ?? $file->getExtension();
+        $fileName = $fileName === null ? $safeFilename . '-' . uniqid() . '.' . $extension : $fileName;
 
         $targetDir = $this->uploadRoot . $targetDir;
 
         if(!file_exists($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
+        dump($targetDir, $fileName);
 
         $file->move($targetDir, $fileName);
 

@@ -1,0 +1,10 @@
+.file-icon {
+    width: 100%;
+    min-width: 42px;
+    max-width: 80px;
+}
+
+.no-a-behaviour {
+    color: inherit;
+    text-decoration: inherit;
+}

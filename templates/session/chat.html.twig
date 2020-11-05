@@ -1,10 +1,32 @@
-<div>
-    {% if contentArr['ChatContent'] is defined %}
-        {% for chatMessage in contentArr['ChatContent'] %}
-            <p>{{ chatMessage.message }}</p>
-        {% endfor %}
-    {% else %}
+<h3>Text share </h3>
 
-    {% endif %}
+{{ form_start(chatForm) }}
 
-</div>
+{{ form_label(chatForm.text) }}
+    {{ form_widget(chatForm.text, {'attr': {'class': 'materialize-textarea'}}) }}
+    {{ form_widget(chatForm.send, {'attr': {'class': 'btn col m6 s12'}}) }}
+{{ form_end(chatForm) }}
+
+<div class="spacer"></div>
+<p class="flow-text">Text messages:</p>
+{% if contentArr['ChatContent'] is defined %}
+    {% for chatMessage in contentArr['ChatContent'] %}
+        <div class="hoverable card-panel scrollable">
+            <div class="sticky">
+                <span class="flow-text">{{ chatMessage.created|date }}</span>
+                <span>&nbsp;</span>
+                <i class="material-icons pointable tooltipped"
+                   data-tooltip="Copy text"
+                   data-copy-target="#chat-content-{{ chatMessage.id }}"
+                   style="font-size: 32px; float:right">
+                    content_paste
+                </i>
+                <hr>
+            </div>
+            <pre id="chat-content-{{ chatMessage.id }}">{{ chatMessage.message }}</pre>
+        </div>
+    {% endfor %}
+{% else %}
+
+{% endif %}
+

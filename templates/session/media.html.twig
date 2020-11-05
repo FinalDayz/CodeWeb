@@ -1,21 +1,63 @@
-<div>
-    <h2>Media content:</h2>
-    {% if contentArr['MediaContent'] is defined %}
+{% block stylesheets %}
+    <link type="text/css" rel="stylesheet" href="/css/media.css" media="screen,projection"/>
+{% endblock %}
+
+<h3>Media content</h3>
+
+{{ form_start(mediaForm) }}
+
+    <div class="file-field input-field">
+        <div class="btn">
+            <span>Upload file</span>
+            <input type="file">
+        </div>
+        <div class="file-path-wrapper">
+            {{ form_widget(mediaForm.file) }}
+            <input class="file-path validate" type="text">
+        </div>
+    </div>
+{{ form_widget(mediaForm.add, {'attr': {'class': 'btn col m6 s12'}}) }}
+{{ form_end(mediaForm) }}
+<div class="spacer"></div>
+<p class="flow-text">Download media:</p>
+{% if contentArr['MediaContent'] is defined %}
+    <ul class="collection file-list ">
         {% for media in contentArr['MediaContent'] %}
-            <h3>{{ media.name }}</h3>
-            <p>Type: {{ media.type }}</p>
-            <p>Size: {{ media.size/1024 }}Kb</p>
-            <a href="{{ path('download-content', {id: media.id}) }}">download</a>
+
+            <li class="collection-item row">
+                <a href="{{ path('download-content', {id: media.id}) }}" class="no-a-behaviour">
+                    <div class="col xl2 l3 s3">
+                        {% if media.fileType matches '/^image\\//' %}
+                            <img src="/assets/image-image.png" alt="" class="file-icon">
+                        {% elseif media.fileType matches '/^application\\/zip/' %}
+                            <img src="/assets/zip-image.png" alt="" class="file-icon">
+                        {% elseif media.fileType matches '/^application\\/x-dosexec/' %}
+                            <img src="/assets/exe-image.png" alt="" class="file-icon">
+                        {% elseif media.fileType matches '/^application\\/pdf/' %}
+                            <img src="/assets/pdf-image.png" alt="" class="file-icon">
+                        {% else %}
+                            <img src="/assets/file-image.png" alt="" class="file-icon">
+                        {% endif %}
+                    </div>
+                    <div class="col xl10 l9 s9">
+                        <span class="title">
+                            <strong>{{ media.name }}</strong>
+                            {% if media.IP is same as(clientIp) %}
+                                <span class="new badge" data-badge-caption="From your ip"></span>
+                            {% endif %}
+                        </span>
+                        <p>
+                            Type: {{ media.fileType }}<br>
+                            Size: {{ media.size|format_bytes }}<br>
+                            Uploaded at: {{ media.created|date }}<br>
+                        </p>
+                    </div>
+
+                </a>
+            </li>
+
         {% endfor %}
-    {% else %}
+    </ul>
+{% else %}
 
-    {% endif %}
-
-
-    Share content:
-    {{ form(mediaForm) }}
-{#    {{ form_start(mediaForm) }}#}
-{#    {{ form_end(mediaForm) }}#}
-
-
-</div>
+{% endif %}
