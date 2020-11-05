@@ -36,7 +36,6 @@ class FileUploader
         if(!file_exists($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
-        dump($targetDir, $fileName);
 
         $file->move($targetDir, $fileName);
 
