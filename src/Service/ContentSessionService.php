@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ContentSessionService
 {
-    static $ID_NUMBER_OF_BLOCKS = 2;
+    static $ID_NUMBER_OF_BLOCKS = 3;
     static $ID_HEX_PER_BLOCK = 2;
     // Number of combinations = 16 ^ ($ID_NUMBER_OF_BLOCKS * $ID_HEX_PER_BLOCK)
     // = 16 ^ (3*2) = 16 581 375
@@ -34,19 +34,21 @@ class ContentSessionService
         );
     }
 
-    public function getSession(string $sessionId, bool $mayExists = true): Session
+    public function getSession(string $sessionId, bool $updateLastUsed = true): Session
     {
         $session = null;
-        if ($mayExists) {
-           $session = $this->entityManager->getRepository(Session::class)
-               ->findOneBy(['sessionId' => $sessionId]);
-        }
+        /** @var Session $session */
+        $session = $this->entityManager->getRepository(Session::class)
+           ->findOneBy(['sessionId' => $sessionId]);
 
-        if(!$session | !$mayExists) {
+
+        if(!$session) {
             $session = new Session();
             $session->setSessionId($sessionId);
             $this->entityManager->persist($session);
             $this->entityManager->flush();
+        } else if($updateLastUsed) {
+            $session->setLastUsed( new \DateTimeImmutable());
         }
 
         return $session;
@@ -108,7 +110,7 @@ class ContentSessionService
     {
         return preg_match(
             '/^([0-9a-f]{'.self::$ID_HEX_PER_BLOCK.'}-){'.(self::$ID_NUMBER_OF_BLOCKS-1).'}([0-9a-f]{'.self::$ID_HEX_PER_BLOCK.'})$/',
-            $sessionId
+            strtolower($sessionId)
         );
     }
 }

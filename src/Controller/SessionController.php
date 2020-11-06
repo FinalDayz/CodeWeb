@@ -164,6 +164,8 @@ class SessionController extends AbstractController
 
         $sessionContent = $service->getSessionContent($this->session);
 
+        $this->data['latestContent'] = $this->contentSessionService->getLatestContentFromSession($this->session);
+
         return $this->render('content-share.html.twig',
             array_merge([
                 'sessionContent' => $sessionContent,
@@ -172,22 +174,25 @@ class SessionController extends AbstractController
     }
 
     /**
-     * @Route("/xhr/latest/{latestId}", name="latest-content-check")
+     * @Route("/xhr/latest/{sessionId}/{latestId}", name="latest-content-check")
      *
      * @param Request $request
+     * @param string $sessionId
      * @param string $latestId
+     * @param ContentSessionService $service
      * @return JsonResponse
      */
     public function hasLatestContent(
         Request $request,
+        string $sessionId,
         string $latestId,
         ContentSessionService $service
     ): Response
     {
-        $this->init($request);
+        $this->session = $service->getSession($sessionId);
 
         $latestContent = $service->getLatestContentFromSession($this->session);
-        $hasLatest = $latestContent->getId() === intval($latestId);
+        $hasLatest = $latestContent ? $latestContent->getId() === intval($latestId) : true;
 
         return new JsonResponse($hasLatest);
     }

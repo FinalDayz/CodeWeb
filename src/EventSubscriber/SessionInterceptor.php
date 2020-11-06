@@ -39,7 +39,7 @@ class SessionInterceptor implements EventSubscriberInterface
 
             $sessionId = $request->cookies->get('content-session');
 
-            if (!$sessionId) {
+            if (!$sessionId || !$this->contentSessionService->verifySessionKey($sessionId)) {
                 $sessionId = $this->contentSessionService->generateId();
 
                 $request->cookies->set(

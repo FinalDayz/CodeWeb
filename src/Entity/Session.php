@@ -71,7 +71,7 @@ class Session
 
     public function getSessionId(): ?string
     {
-        return $this->sessionId;
+        return strtolower($this->sessionId);
     }
 
     public function setSessionId(string $sessionId): self

@@ -28,8 +28,14 @@
             </div>
             <pre id="chat-content-{{ chatMessage.id }}">{{ chatMessage.message }}</pre>
         </div>
+    {% else %}
+        <p class="">
+            <i>No downloads yet</i>
+        </p>
     {% endfor %}
 {% else %}
-
+    <p class="">
+        <i>No messages yet</i>
+    </p>
 {% endif %}
 

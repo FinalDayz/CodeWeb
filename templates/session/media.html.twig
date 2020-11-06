@@ -56,8 +56,14 @@
                 </a>
             </li>
 
+        {% else %}
+            <p>
+                <i>No downloads yet</i>
+            </p>
         {% endfor %}
     </ul>
 {% else %}
-
+    <p>
+        <i>No downloads yet</i>
+    </p>
 {% endif %}

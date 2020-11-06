@@ -1,30 +1,47 @@
 {% extends 'base.html.twig' %}
+{% block javascripts %}
+    <div id="jsData"
+         data-session-id="{{ session.sessionId }}"
+         data-last-content-id="{{ latestContent? latestContent.id : 'false' }}"
+    ></div>
+    <script type="text/javascript" src="/js/ContentSharer.js"></script>
+{% endblock %}
 {% block container %}
     <h1>Content sharer</h1>
-    {% if hadSession %}
-        <p class="flow-text">Using existing session, your session key is: <code>{{ session.sessionId }}</code>, <a href="{{ path("content-sharer-new-session") }}">generate new session</a></p>
-    {% else %}
-        <p class="flow-text">Created new session with key: <code>{{ session.sessionId }}</code>, <a href="{{ path("content-sharer-new-session") }}">, generate new session</a></p>
-    {% endif %}
+    <p class="flow-text">
+        {% if hadSession %}
+            Using existing session, your session key is:
+        {% else %}
+            Created new session with key:
+        {% endif %}
+        <b><code>{{ session.sessionId }}</code></b>
+        | <a href="{{ path("content-sharer-new-session") }}">new session</a>
+        | <a href="#join-modal" class="modal-trigger">join session</a>
+        | <a href="javascript:"
+             data-share-or-copy="{{ url("content-sharer-join-session", {"session-key": session.sessionId}) }}"
+             data-share-title="CodeWeb content session"
+             data-tooltip="Copy link"
+             class="tooltipped">share link</a>
+    </p>
 
-    <div></div>
+    <div id="join-modal" class="modal">
+        <div class="modal-content">
+            <h4>Join (existing) session</h4>
+            <form action="{{ path('content-sharer-join-session') }}" method="get">
+                <div class="input-field inline">
+                    <label for="session-key">Session key</label>
+                    <input id="session-key" class="inline" type="text" name="session-key"/>
+                    <button type="submit" class="btn-small">Join session</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     {% for message in app.flashes('error') %}
         <div style="color: red">
             {{ message }}
         </div>
     {% endfor %}
-    <p class="flow-text">Or join a session:</p>
-    <form action="{{ path('content-sharer-join-session') }}" method="get">
-        <div class="input-field inline">
-
-            <label for="session-key">Session key</label>
-            <input id="session-key" class="inline" type="text" name="session-key"/>
-            <button type="submit" class="btn-small">Join session</button>
-        </div>
-    </form>
-    <div class="spacer"></div>
-    <hr>
     <div class="row">
         <div class="col l6 s12">
 

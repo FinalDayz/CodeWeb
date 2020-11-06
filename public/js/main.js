@@ -6,6 +6,14 @@ $('[data-copy-target]').on('click', function () {
     const target = $(targetSelector);
     const textToCopy = target.text() || target.val();
 
+    copyText(textToCopy);
+
+    if(element.data('tooltip')) {
+        $('.tooltip-content').html('Text copied');
+    }
+});
+
+function copyText(textToCopy) {
     const inputElement = document.createElement('textarea');
     document.body.appendChild(inputElement);
 
@@ -16,8 +24,20 @@ $('[data-copy-target]').on('click', function () {
     document.execCommand("copy");
 
     inputElement.remove();
+}
 
-    if(element.data('tooltip')) {
-        $('.tooltip-content').html('Text copied');
+$('[data-share-or-copy]').on('click', function () {
+    const element = $(this);
+    const url = element.data('shareOrCopy');
+    if(navigator.share) {
+        navigator.share({
+            title: element.data('shareTitle'),
+            url: url
+        });
+    } else {
+        copyText(url);
+        if(element.data('tooltip')) {
+            $('.tooltip-content').html('Text copied');
+        }
     }
 });
