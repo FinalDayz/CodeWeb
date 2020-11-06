@@ -2,17 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\MediaContent;
-use App\Entity\SessionContent;
 use App\Service\ChatContentHandler;
 use App\Service\ContentSessionService;
 use App\Service\MediaContentHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,6 +42,10 @@ class SessionController extends AbstractController
      * @var ChatContentHandler
      */
     private $chatContentHandler;
+    /**
+     * @var array
+     */
+    private $data;
 
     public function __construct(
         MediaContentHandler $mediaContentHandler,
@@ -74,6 +75,15 @@ class SessionController extends AbstractController
         $this->mediaForm = $this->mediaContentHandler->buildForm();
         $this->chatForm = $this->chatContentHandler->buildForm();
         $this->session = $this->contentSessionService->getSessionFromRequest($request);
+
+        $this->data = [
+            'mediaForm' => $this->mediaForm->createView(),
+            'chatForm' => $this->chatForm->createView(),
+            'hadSession' => !$request->cookies->has('new-session'),
+            'session' => $this->session,
+            'clientIp' => $request->getClientIp(),
+            'latestContent' => $this->contentSessionService->getLatestContentFromSession($this->session)
+        ];
     }
 
     /**
@@ -118,12 +128,9 @@ class SessionController extends AbstractController
         if (!$service->verifySessionKey($sessionId)) {
             $this->addFlash("error", "invalid session key");
             return $this->render('content-share.html.twig',
-                [
-                    'mediaForm' => $this->mediaForm->createView(),
-                    'hadSession' => !$request->cookies->has('new-session'),
-                    'session' => $this->session,
+                array_merge([
                     'sessionContent' => $sessionContent,
-                ]
+                ], $this->data)
             );
         } else {
             $response = $this->redirectToRoute('content-sharer');
@@ -143,8 +150,7 @@ class SessionController extends AbstractController
      * @param ChatContentHandler $chatContentHandler
      * @return Response
      */
-    public
-    function contentSharer(
+    public function contentSharer(
         Request $request,
         ContentSessionService $service,
         MediaContentHandler $mediaContentHandler,
@@ -154,19 +160,35 @@ class SessionController extends AbstractController
         $this->init($request);
 
         $mediaContentHandler->handleUpload($this->mediaForm, $request, $this->session);
-        $chatContentHandler->handlerForm($this->chatForm, $request, $this->session);
+        $this->chatForm = $chatContentHandler->handlerForm($this->chatForm, $request, $this->session);
 
         $sessionContent = $service->getSessionContent($this->session);
 
         return $this->render('content-share.html.twig',
-            [
-                'mediaForm' => $this->mediaForm->createView(),
-                'chatForm' => $this->chatForm->createView(),
-                'hadSession' => !$request->cookies->has('new-session'),
-                'session' => $this->session,
+            array_merge([
                 'sessionContent' => $sessionContent,
-                'clientIp' => $request->getClientIp()
-            ]
+            ], $this->data)
         );
+    }
+
+    /**
+     * @Route("/xhr/latest/{latestId}", name="latest-content-check")
+     *
+     * @param Request $request
+     * @param string $latestId
+     * @return JsonResponse
+     */
+    public function hasLatestContent(
+        Request $request,
+        string $latestId,
+        ContentSessionService $service
+    ): Response
+    {
+        $this->init($request);
+
+        $latestContent = $service->getLatestContentFromSession($this->session);
+        $hasLatest = $latestContent->getId() === intval($latestId);
+
+        return new JsonResponse($hasLatest);
     }
 }

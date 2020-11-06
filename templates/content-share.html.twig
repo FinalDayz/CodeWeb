@@ -7,6 +7,8 @@
         <p class="flow-text">Created new session with key: <code>{{ session.sessionId }}</code>, <a href="{{ path("content-sharer-new-session") }}">, generate new session</a></p>
     {% endif %}
 
+    <div></div>
+
     {% for message in app.flashes('error') %}
         <div style="color: red">
             {{ message }}

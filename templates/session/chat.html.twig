@@ -1,3 +1,6 @@
+{% block stylesheets %}
+    <link type="text/css" rel="stylesheet" href="/css/chat.css" media="screen,projection"/>
+{% endblock %}
 <h3>Text share </h3>
 
 {{ form_start(chatForm) }}
@@ -11,7 +14,7 @@
 <p class="flow-text">Text messages:</p>
 {% if contentArr['ChatContent'] is defined %}
     {% for chatMessage in contentArr['ChatContent'] %}
-        <div class="hoverable card-panel scrollable">
+        <div class="hoverable card-panel scrollable chat-text-item">
             <div class="sticky">
                 <span class="flow-text">{{ chatMessage.created|date }}</span>
                 <span>&nbsp;</span>

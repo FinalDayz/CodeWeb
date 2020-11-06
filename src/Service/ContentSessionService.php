@@ -92,6 +92,18 @@ class ContentSessionService
         return implode($hex, '-');
     }
 
+    /**
+     * @param Session $session
+     * @return SessionContent
+     */
+    public function getLatestContentFromSession(
+        Session $session
+    ): ?SessionContent {
+        $latestContent = $this->entityManager->getRepository(SessionContent::class)
+            ->findOneBy(['session' => $session], ['id' => 'DESC']);
+        return $latestContent;
+    }
+
     public function verifySessionKey($sessionId): bool
     {
         return preg_match(

@@ -32,7 +32,7 @@ class ChatContentHandler
             ->getForm();
     }
 
-    public function handlerForm(FormInterface $form, Request $request, Session $session)
+    public function handlerForm(FormInterface $form, Request $request, Session $session): FormInterface
     {
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -46,6 +46,10 @@ class ChatContentHandler
             $entityManager = $this->container->get('doctrine')->getManager();
             $entityManager->persist($chatContent);
             $entityManager->flush();
+
+            return $this->buildForm();
         }
+
+        return $form;
     }
 }
