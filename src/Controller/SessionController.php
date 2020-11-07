@@ -137,6 +137,8 @@ class SessionController extends AbstractController
             $response->headers->setCookie(
                 Cookie::create('content-session', $sessionId, strtotime('now + 1 month'))
             );
+            $request->cookies->set('content-session', $sessionId);
+//            return new Response($sessionId);
             return $response;
         }
     }
