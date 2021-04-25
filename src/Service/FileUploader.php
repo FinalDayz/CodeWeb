@@ -33,7 +33,7 @@ class FileUploader
 
         $targetDir = $this->uploadRoot . $targetDir;
 
-        if(!file_exists($targetDir)) {
+        if (!file_exists($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
 
