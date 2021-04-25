@@ -4,6 +4,12 @@
     max-width: 80px;
 }
 
+.file-image-thumbnail {
+    width: 100%;
+    min-width: 42px;
+    max-width: 110px;
+}
+
 .no-a-behaviour {
     color: inherit;
     text-decoration: inherit;

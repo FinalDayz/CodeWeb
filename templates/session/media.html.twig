@@ -28,7 +28,8 @@
                 <a href="{{ path('download-content', {id: media.id}) }}" class="no-a-behaviour">
                     <div class="col xl2 l3 s3">
                         {% if media.fileType matches '/^image\\//' %}
-                            <img src="/assets/image-image.png" alt="" class="file-icon">
+                            <img src="{{ path('image-thumbnail', {'id': media.id}) }}" alt="" class="file-image-thumbnail">
+{#                            <img src="/assets/image-image.png" alt="" class="file-icon">#}
                         {% elseif media.fileType matches '/^application\\/zip/' %}
                             <img src="/assets/zip-image.png" alt="" class="file-icon">
                         {% elseif media.fileType matches '/^application\\/x-dosexec/' %}
