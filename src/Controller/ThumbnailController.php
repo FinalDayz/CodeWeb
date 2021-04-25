@@ -32,13 +32,14 @@ class ThumbnailController extends AbstractController
      * @param MediaContentHandler $handler
      * @return Response
      */
-    public function ImageThumbnail(Request $request, string $id, FileHelper $fileHelper) {
+    public function ImageThumbnail(Request $request, string $id, FileHelper $fileHelper)
+    {
         $session = $this->contentSessionService->getSessionFromRequest($request);
 
         $mediaContent = $this->getDoctrine()->getRepository(MediaContent::class)
             ->find($id);
 
-        if($mediaContent === null || $mediaContent->getSession()->getId() !== $session->getId()) {
+        if ($mediaContent === null || $mediaContent->getSession()->getId() !== $session->getId()) {
             throw new NotFoundHttpException("File not found");
         }
 
