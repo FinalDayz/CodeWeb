@@ -164,6 +164,11 @@ class SessionController extends AbstractController
         $mediaContentHandler->handleUpload($this->mediaForm, $request, $this->session);
         $this->chatForm = $chatContentHandler->handlerForm($this->chatForm, $request, $this->session);
 
+        $formErrors = $this->mediaForm->getErrors(true);
+        foreach($formErrors as $error) {
+            $this->addFlash('error', $error->getMessage());
+        }
+
         $sessionContent = $service->getSessionContent($this->session);
 
         $this->data['latestContent'] = $this->contentSessionService->getLatestContentFromSession($this->session);
