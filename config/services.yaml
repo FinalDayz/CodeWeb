@@ -25,6 +25,10 @@ services:
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
+    # Symfony 5.4 no longer autowires the container; ChatContentHandler and
+    # MediaContentHandler still take it in their constructors.
+    Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
+
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']

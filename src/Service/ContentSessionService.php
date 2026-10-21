@@ -91,7 +91,7 @@ class ContentSessionService
             );
         }
 
-        return implode($hex, '-');
+        return implode('-', $hex);
     }
 
     /**
